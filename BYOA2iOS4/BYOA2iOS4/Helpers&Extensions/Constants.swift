@@ -11,11 +11,11 @@ struct Constants {
     
     struct BeerList {
         static let beersBaseURL = "https://api.punkapi.com/v2"
-        static let allBeersPath = "beers"
+        static let allBeersPath = "/beers"
         static let randomBeerPath = "beers/random"
     }
     
     struct Error {
-        static let unkownError = "Unknown Error. You sure you should be programming?"
+        static let unkownError = "Unknown Error At This Time."
     }
 }

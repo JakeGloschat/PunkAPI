@@ -5,11 +5,11 @@
 //  Created by Jake Gloschat on 3/1/23.
 //
 
-import Foundation
+import UIKit
 
-struct BeerList {
+struct NetworkingController {
     
-    static func fetchAllBeers(completion: @escaping (Result<[TopLevel], NetworkError>) -> Void) {
+    static func fetchAllBeers(completion: @escaping (Result<[Beer], NetworkError>) -> Void) {
         guard let baseURL = URL(string: Constants.BeerList.beersBaseURL) else { completion(.failure(.invalidURL)) ; return }
         
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -31,16 +31,16 @@ struct BeerList {
             guard let data = data else { completion(.failure(.noData)) ; return }
             
             do {
-                let topLevel = try JSONDecoder().decode([TopLevel].self, from: data)
-                completion(.success(topLevel))
+                let beers = try JSONDecoder().decode([Beer].self, from: data)
+                completion(.success(beers))
             } catch {
-                completion(.failure(.UnableToDecode))
+                completion(.failure(.unableToDecode))
                 return
             }
         }.resume()
     }
     
-    static func fetchRandomBeer(completion: @escaping (Result<[TopLevel], NetworkError>) -> Void) {
+    static func fetchRandomBeer(completion: @escaping (Result<Beer, NetworkError>) -> Void) {
         guard let baseURL = URL(string: Constants.BeerList.beersBaseURL) else { completion(.failure(.invalidURL)) ; return }
         
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -62,13 +62,35 @@ struct BeerList {
             guard let data = data else { completion(.failure(.noData)) ; return }
             
             do {
-                let topLevel = try JSONDecoder().decode([TopLevel].self, from: data)
-                completion(.success(topLevel))
+                let topLevelArray = try JSONDecoder().decode([Beer].self, from: data)
+                let beer = topLevelArray[0]
+                completion(.success(beer))
             } catch {
-                completion(.failure(.UnableToDecode))
+                completion(.failure(.unableToDecode))
                 return
             }
         }.resume()
+    }
+    
+    static func fetchImage(for item: String?, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
         
+        guard let item = item else { completion(.success(UIImage(named: "Last_Buca_Ref")!)) ; return }
+        guard let finalURL = URL(string: item) else { completion(.failure(.invalidURL)) ; return }
+        print("Image Fetch Final URL: \(finalURL)")
+        
+        URLSession.shared.dataTask(with: finalURL) { data, response, error in
+            if let error = error {
+                completion(.failure(.thrownError(error)))
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse,
+                  (200...299).contains(response.statusCode) else { completion(.failure(.invalidStatusCode)) ; return }
+            
+            guard let data = data, !data.isEmpty else { completion(.failure(.noData)) ; return }
+            
+            guard let image = UIImage(data: data) else { completion(.failure(.unableToDecode)) ; return }
+            completion(.success(image))
+        }.resume()
     }
 }

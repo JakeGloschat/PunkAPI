@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TopLevel: Decodable {
+struct Beer: Decodable {
     private enum CodingKeys: String, CodingKey {
         case name
         case tagline
@@ -23,7 +23,7 @@ struct TopLevel: Decodable {
     let description: String
     let image: String
     let abv: Double
-    let ibu: Int
+    let ibu: Double?
     let volume: Volume
 }
 
