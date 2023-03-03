@@ -12,7 +12,7 @@ struct Constants {
     struct BeerList {
         static let beersBaseURL = "https://api.punkapi.com/v2"
         static let allBeersPath = "/beers"
-        static let randomBeerPath = "beers/random"
+        static let randomBeerPath = "/beers/random"
     }
     
     struct Error {

@@ -21,7 +21,7 @@ struct Beer: Decodable {
     let name: String
     let tagline: String
     let description: String
-    let image: String
+    let image: String?
     let abv: Double
     let ibu: Double?
     let volume: Volume

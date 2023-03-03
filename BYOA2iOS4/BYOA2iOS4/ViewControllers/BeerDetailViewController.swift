@@ -15,22 +15,28 @@ class BeerDetailViewController: UIViewController {
     @IBOutlet weak var beerNameLabel: UILabel!
     @IBOutlet weak var beerAbvLabel: UILabel!
     @IBOutlet weak var beerIbuLabel: UILabel!
+    @IBOutlet weak var beerUnitLabel: UILabel!
+    @IBOutlet weak var beerVolumeLabel: UILabel!
     @IBOutlet weak var beerDescriptionLabel: UILabel!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateUI(withBeer: beer)
     }
     
     // MARK: - Properties
     var beer: Beer?
     
     // MARK: - Functions
-    func updateUI(withBeer beer: Beer) {
+    func updateUI(withBeer beer: Beer?) {
+        guard let beer = beer else { return }
         beerTagLineLabel.text = beer.tagline
         beerNameLabel.text = beer.name
-        beerAbvLabel.text = "abv: \(beer.abv)"
-        beerIbuLabel.text = "ibu: \(beer.ibu ?? 0.0)"
+        beerAbvLabel.text = "Alcohol By Volume: \(beer.abv)"
+        beerIbuLabel.text = "International Biterness Units: \(beer.ibu ?? 0.0)"
+        beerUnitLabel.text = "\(beer.volume.unit):"
+        beerVolumeLabel.text = "\(beer.volume.value)"
         beerDescriptionLabel.text = beer.description
         fetchBeerImage()
     }
